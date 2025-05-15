@@ -15,7 +15,7 @@ dp = Dispatcher()
 
 
 async def cats():
-    bot = Bot(token='8167570443:AAGtJONr4kGGXVX-ODN-BkshE8Y41BMLVTw')
+    bot = Bot(token='8024246712:AAHtWKMJ76FA0SCK5oDRYPiAjKucF0sObvY')
     await dp.start_polling(bot)
 
 
@@ -43,5 +43,7 @@ async def send_welcome(message: types.Message):
         # Готово! Отправляем группу картинок
         await asyncio.sleep(1)
         await message.reply_media_group(media=media.build())
-    rent = 0
-    sys.exit()
+
+
+if __name__ == '__main__':
+    asyncio.run(cats())

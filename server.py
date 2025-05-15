@@ -11,7 +11,6 @@ from aiogram.filters import Command
 from aiogram.types import FSInputFile
 from aiogram.utils.chat_action import ChatActionSender
 from aiogram.utils.media_group import MediaGroupBuilder
-from ui import cats
 import datetime
 
 
@@ -30,11 +29,6 @@ async def cats(update, context):
 
 
 async def echo(update, context):
-    # У объекта класса Updater есть поле message,
-    # являющееся объектом сообщения.
-    # У message есть поле text, содержащее текст полученного сообщения,
-    # а также метод reply_text(str),
-    # отсылающий ответ пользователю, от которого получено сообщение.
     await update.message.reply_text(update.message.text)
 
 
@@ -200,7 +194,6 @@ async def tic_tac_toe(update, context):
 board = [[" " for _ in range(3)] for _ in range(3)]
 current_player = "X"
 difficulty = 0
-rent = 0
 
 
 async def t(update, context):
@@ -222,7 +215,6 @@ async def t(update, context):
 async def r(update, context):
     global difficulty
     global current_player
-    global rent
     try:
         row, col = map(int, update.message.text.split())
         if (row, col) not in get_empty_cells(board):
@@ -235,15 +227,13 @@ async def r(update, context):
     winner = check_winner(board)
     if winner:
         await update.message.reply_text(print_board(board))
-        await update.message.reply_text("Вы победили!" if winner == "X" else "Компьютер победил!")
-        rent = 1
-        return ConversationHandler.END
+        await update.message.reply_text("Вы победили!\n Ещё раз?" if winner == "X" else "Компьютер победил!\n Ещё раз?")
+        return 4
 
     if is_board_full(board):
         await update.message.reply_text(print_board(board))
-        await update.message.reply_text("Ничья!")
-        rent = 1
-        return ConversationHandler.END
+        await update.message.reply_text("Ничья!\n Ещё раз?")
+        return 4
     await update.message.reply_text(print_board(board))
     current_player = "O" if current_player == "X" else "X"
     await update.message.reply_text("Ход компьютера...")
@@ -262,6 +252,19 @@ async def r(update, context):
 async def stop(update, context):
     await update.message.reply_text("Всего доброго!")
     return ConversationHandler.END
+
+
+async def recet(update, context):
+    da = ["да", "Да", "Давай", "y", "Y", "yes", "YES", "Yes", "ДА"]
+    net = ["нет", "НЕТ", "НЕт", "n", "N", "no", "NO", "No", "Нет"]
+    if update.message.text in da:
+        return 1
+    elif update.message.text in net:
+        await update.message.reply_text("Всего доброго!")
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text("Некорректный ввод!")
+        return 4
 
 
 async def work_time(update, context):
@@ -297,7 +300,9 @@ def main():
             # Функция читает ответ на второй вопрос и завершает диалог.
             2: [MessageHandler(filters.TEXT & ~filters.COMMAND, tic_tac_toe)],
 
-            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, r)]
+            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, r)],
+
+            4: [MessageHandler(filters.TEXT & ~filters.COMMAND, recet)]
         },
 
         # Точка прерывания диалога. В данном случае — команда /stop.
@@ -305,13 +310,6 @@ def main():
     )
 
     application.add_handler(conv_handler)
-
-    # Создаём обработчик сообщений типа filters.TEXT
-    # из описанной выше асинхронной функции echo()
-    # После регистрации обработчика в приложении
-    # эта асинхронная функция будет вызываться при получении сообщения
-    # с типом "текст", т. е. текстовых сообщений.
-    # Запускаем приложение.
     application.run_polling()
 
 
