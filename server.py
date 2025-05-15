@@ -250,6 +250,8 @@ async def r(update, context):
 
 
 async def stop(update, context):
+    global board
+    board = [[" " for _ in range(3)] for _ in range(3)]
     await update.message.reply_text("Всего доброго!")
     return ConversationHandler.END
 
@@ -258,8 +260,11 @@ async def recet(update, context):
     da = ["да", "Да", "Давай", "y", "Y", "yes", "YES", "Yes", "ДА"]
     net = ["нет", "НЕТ", "НЕт", "n", "N", "no", "NO", "No", "Нет"]
     if update.message.text in da:
+        global board
+        board = [[" " for _ in range(3)] for _ in range(3)]
         return 1
     elif update.message.text in net:
+        board = [[" " for _ in range(3)] for _ in range(3)]
         await update.message.reply_text("Всего доброго!")
         return ConversationHandler.END
     else:
