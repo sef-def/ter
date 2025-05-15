@@ -25,8 +25,8 @@ reply_keyboard = [['/address', '/phone', '/date', '/time'],
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
 
 
-async def catss(update, context):
-    return ConversationHandler.END
+async def cats(update, context):
+    await update.message.reply_text('\nкотики t.me/wdwrbot')
 
 
 async def echo(update, context):
@@ -237,13 +237,13 @@ async def r(update, context):
         await update.message.reply_text(print_board(board))
         await update.message.reply_text("Вы победили!" if winner == "X" else "Компьютер победил!")
         rent = 1
-        return 4
+        return ConversationHandler.END
 
     if is_board_full(board):
         await update.message.reply_text(print_board(board))
         await update.message.reply_text("Ничья!")
         rent = 1
-        return 4
+        return ConversationHandler.END
     await update.message.reply_text(print_board(board))
     current_player = "O" if current_player == "X" else "X"
     await update.message.reply_text("Ход компьютера...")
@@ -283,6 +283,7 @@ def main():
     application.add_handler(CommandHandler("work_time", work_time))
     application.add_handler(CommandHandler("help", help))
     application.add_handler(CommandHandler("close", close_keyboard))
+    application.add_handler(CommandHandler("cats", cats))
     conv_handler = ConversationHandler(
         # Точка входа в диалог.
         # В данном случае — команда /start. Она задаёт первый вопрос.
@@ -296,9 +297,7 @@ def main():
             # Функция читает ответ на второй вопрос и завершает диалог.
             2: [MessageHandler(filters.TEXT & ~filters.COMMAND, tic_tac_toe)],
 
-            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, r)],
-
-            4: [MessageHandler(filters.TEXT & ~filters.COMMAND, catss)]
+            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, r)]
         },
 
         # Точка прерывания диалога. В данном случае — команда /stop.
